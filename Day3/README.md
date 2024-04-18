@@ -6,6 +6,8 @@
 3.编写 withdraw() 方法，仅管理员可以通过该方法提取资金。
 4.用数组记录存款金额的前 3 名用户
 
+* [代码](Bank.sol)
+
 EOA：0x5B38Da6a701c568545dCfcB03FcB875f56beddC4部署合约，存钱2
 ![alt text](1713443630758.jpg)
 EOA：0x5B38Da6a701c568545dCfcB03FcB875f56beddC4取钱1
