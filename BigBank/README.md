@@ -7,6 +7,9 @@
 4.编写 withdraw() 方法，仅管理员可以通过该方法提取资金。
 5.用数组记录存款金额的前 3 名用户
 
+* [BigBank.sol代码](BigBank.sol)
+* [Ownable.sol代码](Ownable.sol)
+  
 EOA：0x5B38Da6a701c568545dCfcB03FcB875f56beddC4部署合约，存钱1Wei报错，因为要求存款金额 >0.001 ether
 ![alt text](1713524514952.jpg)
 BigBank合约支持转移管理员：
