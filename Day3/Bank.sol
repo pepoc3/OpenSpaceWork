@@ -26,11 +26,11 @@ contract Bank {
         updateTopThree(msg.sender);
     }
 
-    function withdraw() external onlyOwner payable{
-
-        payable(msg.sender).transfer(msg.value);
-        userBalances[msg.sender] -= msg.value;
-        emit Withdrawal(msg.sender, msg.value);
+    function withdraw(uint a) external onlyOwner {
+        require(a <= userBalances[msg.sender], "Insufficient account balance");
+        payable(msg.sender).transfer(a);
+        userBalances[msg.sender] -= a;
+        emit Withdrawal(msg.sender, a);
         updateTopThree(msg.sender);
     }
 
