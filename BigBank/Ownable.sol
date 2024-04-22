@@ -16,7 +16,7 @@ contract Ownable  {
         emit Received(msg.sender, msg.value);
     }
     //Ownable调用 BigBank 的 withdraw(),且只有owner可以调用
-    function withdraw(address _counter) external payable onlyOwner{
+    function withdraw(address _counter) external onlyOwner{
         BigBank(_counter).withdraw();
     }
 
