@@ -8,14 +8,13 @@
 * [TokenBank.sol代码](TokenBank.sol)
 
 1.调用ERC20合约approve函数，授权TokenBank合约，额度为3
-![alt text](1713782429663.jpg)
-2.调用TokenBank合约deposit函数存款1，函数里面引用ERC20合约的transferFrom函数
-![alt text](1713782792857.jpg)
+![alt text](1713836126503.jpg)
+2.调用TokenBank合约deposit函数存款1，函数里面引用ERC20合约的transferFrom函数，同时可以用userBalance查看用户已存入多少金额
+![alt text](1713836211111.jpg)
 3.用户取钱2，报错transfer amount exceeds balance，因为余额只有1。withdraw函数引用ERC20合约的transfer函数
-![alt text](1713782960262.jpg)
+![alt text](1713842320226.jpg)
 4.用户存钱3，报错ERC20: transfer amount exceeds allowance，因为授权额度只有3，刚才已经存钱了1，授权额度只剩2
-![alt text](1713783265807.jpg)
-5.userBalances函数可以查看用户余额
-![alt text](1713783350506.jpg)
+![alt text](1713842414787.jpg)
+
 
 
