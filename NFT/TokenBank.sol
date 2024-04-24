@@ -13,6 +13,7 @@ contract TokenBank {
         userBalances[msg.sender] += _value;
     }
     function tokensReceived(address _useraddress, uint256 _value) public returns (bool){
+        require(msg.sender == _erc20addr, "tokensReceived function should be called by ERC20 contract!");
         userBalances[_useraddress] += _value;
         return true;
     }
