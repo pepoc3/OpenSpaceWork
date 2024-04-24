@@ -1,8 +1,13 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
-import "./TokenBank.sol";
+import "./NFTMarket.sol";
 
-contract ERC20 {
+interface TokenRecipient {
+    
+    function tokensReceived(address _address, uint _amount, bytes memory _ExtraData) external returns (bool);
+}
+
+contract ERC20{
     string public name; 
     string public symbol; 
     uint8 public decimals; 
@@ -38,20 +43,8 @@ contract ERC20 {
         emit Transfer(msg.sender, _to, _value);  
         return true;   
     }
-    
-    function transferWithCallback(address _to, uint256 _value) external returns (bool success) {
-        balances[msg.sender] -= _value;
-        balances[_to] += _value;
-        emit Transfer(msg.sender, _to, _value);  
-        if (isContract(_to)) {
-        bool rv = TokenBank(_to).tokensReceived(msg.sender, _value);
-        require(rv, "Transfer failed");
-    }
 
-    return true;
-    }
-
-    function transferFrom(address _from, address _to, uint256 _value) payable public returns (bool success) {
+    function transferFrom(address _from, address _to, uint256 _value) public returns (bool success) {
         // write your code here
         require(_value <= allowances[_from][msg.sender], "ERC20: transfer amount exceeds allowance");
         require(_value <= balances[_from], "ERC20: transfer amount exceeds balance");
@@ -60,6 +53,19 @@ contract ERC20 {
         balances[_to] += _value;
         emit Transfer(_from, _to, _value); 
         return true; 
+    }
+
+    function transferWithCallback(address recipient, uint256 amount, bytes memory ExtraData) external returns (bool) {
+        require(amount <= balances[msg.sender], "ERC20: transfer amount exceeds balance");
+        balances[msg.sender] -= amount;
+        balances[recipient] += amount;
+        
+        if (isContract(recipient)) {
+        bool rv = TokenRecipient(recipient).tokensReceived(msg.sender, amount, ExtraData);
+        require(rv, "No tokensReceived");
+        }
+
+        return true;
     }
 
     function approve(address _spender, uint256 _value) public returns (bool success) {
