@@ -5,7 +5,9 @@ contract Bank {
 
     event Deposit(address indexed user, uint amount);
 
-    function depositETH(address user, uint256 amount) external payable {
+    function depositETH() external payable {
+        address user = msg.sender;
+        uint256 amount = msg.value;
         require(amount > 0, "Deposit amount must be greater than 0");
         balanceOf[user] += amount;
         emit Deposit(user, amount);
