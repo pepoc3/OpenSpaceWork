@@ -1,0 +1,11 @@
+{
+  "sepolia": {
+    "Contract": {
+      "address": "0x9e72881669c7b39d4283B3ce11922C248B2c5755",
+      "startBlock": 5766033
+    },
+    "S2NFT": {
+      "address": "0xa22F47fe771c5dBD503EF763EEfAC41aB93e200E"
+    }
+  }
+}
