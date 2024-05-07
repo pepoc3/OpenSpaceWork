@@ -9,7 +9,13 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 // import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 // import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import {Upgrades} from "openzeppelin-foundry-upgrades/Upgrades.sol";
-contract NFTMarketV1 {
+import "openzeppelin-contracts-upgradeable/contracts/proxy/utils/Initializable.sol";
+import "openzeppelin-contracts-upgradeable/contracts/access/OwnableUpgradeable.sol";
+import "openzeppelin-contracts-upgradeable/contracts/proxy/utils/UUPSUpgradeable.sol";
+
+
+
+contract NFTMarketV1 is  OwnableUpgradeable, UUPSUpgradeable{
     address tokenAddress;
     address nftAddress;
 
@@ -29,6 +35,8 @@ contract NFTMarketV1 {
     function initialize(address _tokenAddress, address _nftAddress) initializer public {
         tokenAddress = _tokenAddress;
         nftAddress = _nftAddress;
+
+        __Ownable_init(msg.sender);
     }
 
     function tokenReceived(address sender, uint256 amount, bytes calldata data) external returns (bool) {
@@ -60,10 +68,10 @@ contract NFTMarketV1 {
         delete seller[nftId];
         return true;
     }
-    // 确保了安全的合约升级，只允许所有者授权新的合约版本
     function _authorizeUpgrade(address newImplementation)
         internal
         onlyOwner
         override
     {}
+    
 }
