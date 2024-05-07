@@ -6,7 +6,11 @@ import "@openzeppelin/contracts/proxy/Clones.sol";
 contract Implementation is ERC20{
     bool public isBase;
     address public owner;
-    uint permint;
+    uint _price;
+    uint _totalSupply;
+    uint _permint;
+    uint feePercent = 10;
+    uint fee;
     mapping(address => uint256) private _balances;
 
     modifier onlyOwner() {
@@ -22,20 +26,28 @@ contract Implementation is ERC20{
         address _owner,
         string calldata _name,
         string calldata _symbol,
-        uint _totalSupply,
-        uint _permint,
+        uint totalSupply,
+        uint permint,
         uint price) external {
         require(isBase == false, "Error: This base contract, cannot initialize");
         require(owner == address(0), "Error: Contract already initialized");
         owner = _owner;
-        permint = _permint;
-        _totalSupply = _totalSupply;
+        _permint = permint;
+        _totalSupply = totalSupply;
         _name = _name;
         _symbol = _symbol;
+        _price = price;
+        fee = _price * feePercent / 100 ;
+
     }
-     function mint(address user, uint fee) external payable onlyOwner{
-        _mint(user, permint);
-        payable(owner).transfer(msg.value-fee); // Transfer the minting fee to the contract owner
+     function mint(address user) external payable{
+        require(msg.value >= _price, "no sufficient transfer value");
+         require(
+            _totalSupply < _totalSupply - _permint,
+            "exceed maximum supply"
+        );
+        _mint(user, _permint);
+        payable(owner).transfer(fee); // Transfer the minting fee to the contract owner
 
     }
     
@@ -56,8 +68,7 @@ contract CloneFactory {
     mapping(address => address[]) allClones;
     event NewClone(address _newClone, address _owner);
     uint price;
-    uint feePercent = 10;
-    uint fee = price * feePercent / 100 ;
+    
     constructor(address _implement) {
         implement = _implement;
         
@@ -84,7 +95,12 @@ contract CloneFactory {
     }
 
     function mintInscription(address tokenAddr) payable external {
-    // require(msg.value >= price, "Insufficient funds");
-    Implementation(tokenAddr).mint(msg.sender, fee);
+    //铸造并转账
+    require(
+            msg.value >= price,
+            "insufficient payment"
+        );
+    Implementation(tokenAddr).mint{value: price}(msg.sender);
     }
+
 }
