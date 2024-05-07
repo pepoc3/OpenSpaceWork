@@ -9,66 +9,41 @@ contract NftMarketTest is Test {
     address nftAddress;
     address nftMarketAddress;
     address tokenAddress;
+    address alice;
+    uint256 aliceKey;
 
     function setUp() public {
+        (alice, aliceKey) = makeAddrAndKey("alice");
+        vm.startPrank(alice);
         nftAddress = address(new ERC2612-NFT(11155111));
         tokenAddress = address(new ERC2612());
         nftMarketAddress = address(new NFTMarket(nftAddress,tokenAddress));
+        vm.stopPrank();
+
     }
 
     function test_permitBuy() public {
-        uint alicePrivateKey = 1;
-        uint tomPrivateKey = 2;
-        address alice = vm.addr(alicePrivateKey);
-        address tom = vm.addr(tomPrivateKey);
-
-        vm.prank(alice);
+        address tom = makeAddr("tom");
+        vm.prank(tom);
         ERC2612-Nft(nftAddress).mint();
+        vm.prank(address(this));
+        ERC2612(tokenAddress).transfer(tom, 100);
 
-        ERC2612(tokenAddress).transfer(tom, 1e18);
+        NFTMarket(nftMarketAddress).list(0, 100);
 
-        bytes32 digest = keccak256(
-            abi.encodePacked(
-                hex"1901",
-                ERC2612-Nft(nftAddress).DOMAIN_SEPARATER(),
-                keccak256(
-                    abi.encode(
-                        keccak256(
-                            "Permit(address from,address to,uint256 nftId,uint256 nonce,uint256 deadline)"
-                        ),
-                        alice,
-                        nftMarketAddress,
-                        0,
-                        0,
-                        2 days
-                    )
-                )
-            )
-        );
+        vm.startPrank(alice);
+        bytes32 hash = keccak256(abi.encodePacked(tom, uint256(0)));
+        hash = MessageHashUtils.toEthSignedMessageHash(hash);
+        (uint8 v, bytes32 r, bytes32 s) = vm.sign(aliceKey, hash);
+        bytes memory sig = abi.encodePacked(r, s, v);
+        vm.stopPrank();
 
-        (uint8 v, bytes32 r, bytes32 s) = vm.sign(alicePrivateKey, digest);
+        vm.startPrank(tom);
+        ERC2612(tokenAddress).approve(address(nftMarket), 100);
 
-    
-        vm.prank(tom);
-        NewToken(tokenAddress).approve(nftMarketAddress, 1e18);
-        console.log(
-            "allowance from tom to nft market",
-            NewToken(tokenAddress).allowance(tom, nftMarketAddress)
-        );
+        nftMarket.permitBuy(0, sig, 0);
 
-        vm.prank(tom);
-        NftMarket(nftMarketAddress).permitBuy(
-            alice,
-            nftMarketAddress,
-            1e18,
-            0,
-            0,
-            2 days,
-            v,
-            r,
-            s
-        );
-
-        vm.assertEq(NewNft(nftAddress).ownerOf(0), tom);
+        assertEq(token.balanceOf(tom), 0);
+        assertEq(nft.balanceOf(tom), 1);
     }
 }
