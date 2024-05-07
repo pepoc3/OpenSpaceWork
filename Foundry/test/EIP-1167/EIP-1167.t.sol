@@ -9,17 +9,19 @@ contract ERC20FactoryTest is Test {
     Implementation bi;
     CloneFactory factory;
 
-    uint256 ownerPrivateKey = 0xA11CE;
-    address alice = vm.addr(ownerPrivateKey);
-    uint256 buyerPrivateKey = 0xB22DC;
-
+    // uint256 ownerPrivateKey = 0xA11CE;
+    // address alice = vm.addr(ownerPrivateKey);
+    // uint256 buyerPrivateKey = 0xB22DC;
+    address alice;
+    // address bob;
  
     function setUp() public {
-        vm.startPrank(alice);
+        vm.prank(alice);
         bi = new Implementation();
-        factory = new CloneFactory();
+        factory = new CloneFactory(bi);
     }
     function test_deployInscription() public {
+        vm.prank(alice);
         deployInscription();
     }
     function deployInscription() private {
@@ -30,4 +32,45 @@ contract ERC20FactoryTest is Test {
         uint price = 1000;
         factory.deployInscription(name, symbol, totalSupply, perMint, price);
     }
+
+    function test_shouldMintAsPerMint() public {
+        vm.deal(alice, 1000);
+        address aliceInscription = CloneFactory(factory).allClones(alice, 0);
+        vm.startPrank(alice);
+        CloneFactory(factory).mintInscription{
+            value: 1000
+        }(aliceInscription);
+        vm.assertEq(
+            Inscription(aliceInscription).totalSupply(),
+            1000
+        );
+    }
+
+    function testFailed_mintMoreThan_totalSupplyLimit() public {
+        vm.deal(alice, 1000);
+        address aliceInscription = CloneFactory(factory)
+            .allClones(alice, 0);
+        vm.startPrank(alice);
+        for (uint i = 0; i < 10; i++) {
+            CloneFactory(factory).mintInscription{
+                value: 1000
+            }(aliceInscription);
+        
+        }
+         CloneFactory(factory).mintInscription{
+                value: 1000
+            }(aliceInscription);
+    }
+    }
+
+     function test_shouldSplitFee() public {
+        vm.deal(alice, 1000);
+        address aliceInscription = CloneFactory(factory).allClones(alice, 0);
+        vm.startPrank(alice);
+        CloneFactory(factory).mintInscription{
+            value: 1000
+        }(aliceInscription);
+        vm.assertEq(aliceInscription.balance, 900);
+        vm.assertEq(alice.balance, 100);
+     }
 }
