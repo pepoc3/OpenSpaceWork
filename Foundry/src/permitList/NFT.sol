@@ -4,7 +4,7 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 
-contract IERC721 is ERC721URIStorage {
+contract NFT is ERC721URIStorage {
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
     bytes32 public DOMAIN_SEPARATER;
@@ -13,8 +13,8 @@ contract IERC721 is ERC721URIStorage {
 
     constructor() ERC721(unicode"MyNft", "NFT") {}
 
-    function mint() external returns (bool) {
-        _mint(msg.sender, tokenId);
+    function mint(address user) external returns (bool) {
+        _mint(user, tokenId);
         tokenId += 1;
         return true;
     }
