@@ -1,0 +1,31 @@
+type Approval @entity(immutable: true) {
+  id: Bytes!
+  token: Bytes! # address
+  owner: Bytes! # address
+  spender: Bytes! # address
+  value: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type Transfer @entity(immutable: true) {
+  id: Bytes!
+  token: Bytes! # address
+  from: Bytes! # address
+  to: Bytes! # address
+  value: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type TokenHolder @entity(immutable: true) {
+  id: Bytes!
+  token: Bytes! # address
+  holder: Bytes! # address
+  balance: BigInt! # uint256
+  update_blockNumber: BigInt!
+  update_blockTimestamp: BigInt!
+  update_transactionHash: Bytes!
+}

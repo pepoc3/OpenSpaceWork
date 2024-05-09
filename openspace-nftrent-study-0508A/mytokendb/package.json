@@ -1,0 +1,21 @@
+{
+  "name": "mytokendb",
+  "license": "UNLICENSED",
+  "scripts": {
+    "codegen": "graph codegen",
+    "build": "graph build",
+    "deploy": "graph deploy --studio mytokendb",
+    "deployByMyIFPS": "graph deploy --ipfs http://localhost:5001 --node https://api.studio.thegraph.com/deploy/ mytokendb",
+    "create-local": "graph create --node http://localhost:8020/ mytokendb",
+    "remove-local": "graph remove --node http://localhost:8020/ mytokendb",
+    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 mytokendb",
+    "test": "graph test"
+  },
+  "dependencies": {
+    "@graphprotocol/graph-cli": "0.71.0",
+    "@graphprotocol/graph-ts": "0.32.0"
+  },
+  "devDependencies": {
+    "matchstick-as": "0.5.0"
+  }
+}

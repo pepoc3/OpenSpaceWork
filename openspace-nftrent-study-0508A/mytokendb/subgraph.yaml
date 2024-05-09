@@ -1,0 +1,52 @@
+specVersion: 1.0.0
+indexerHints:
+  prune: auto
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum
+    name: MT
+    network: sepolia
+    source:
+      address: "0x190873386803Db026fd185936Dbf2A6E81457810"
+      abi: MT
+      startBlock: 5789746
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - Approval
+        - Transfer
+      abis:
+        - name: MT
+          file: ./abis/MT.json
+      eventHandlers:
+        - event: Approval(indexed address,indexed address,uint256)
+          handler: handleApproval
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleTransfer
+      file: ./src/mt.ts
+  - kind: ethereum
+    name: ZK01
+    network: sepolia
+    source:
+      address: "0x0a5B53232685B8291255C3EA2e6D30987143F2e8"
+      abi: MT
+      startBlock: 5781163
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - Approval
+        - Transfer
+      abis:
+        - name: MT
+          file: ./abis/MT.json
+      eventHandlers:
+        - event: Approval(indexed address,indexed address,uint256)
+          handler: handleApproval
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleTransfer
+      file: ./src/mt.ts
