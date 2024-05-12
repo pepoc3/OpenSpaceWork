@@ -11,7 +11,7 @@ contract RNTIDO {
     uint256 public constant HARDCAP = 100 ether; //最高募资额
     uint256 public immutable END_AT; //7天后结束
     IERC20 public immutable RNT;
-    uint256 public constant TOTAL_SUPPLY = PRICE*SOFTCAP; 
+    uint256 public constant TOTAL_SUPPLY = SOFTCAP/PRICE ; 
     uint256 public totalSold;
     uint256 public totalRaised;
     mapping(address => uint256) public balances;
