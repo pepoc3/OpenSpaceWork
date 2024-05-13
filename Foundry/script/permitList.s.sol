@@ -1,31 +1,71 @@
-// SPDX-License-Identifier: MIT
-pragma solidity 0.8.25;
-import "forge-std/Script.sol";
-import "../src/permitList/NFT.sol";
-import "../src/permitList/Token.sol";
-import "../src/permitList/NftMarketV1.sol";
-import "../src/permitList/NftMarketV2.sol";
-import {Upgrades} from "openzeppelin-foundry-upgrades/Upgrades.sol";
+// SPDX-License-Identifier: UNLICENSED
+pragma solidity ^0.8.13;
 
-contract NewPermitListScript is Script {
+import {Script, console} from "forge-std/Script.sol";
+import {NFTMarketV1} from "../src/permitList/NFTMarketV1.sol";
+import {NFTMarketV2} from "../src/permitList/NFTMarketV2.sol";
+import {NFT} from "../src/permitList/NFT.sol";
+import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import {Token} from "../src/permitList/Token.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import {Upgrades} from "openzeppelin-foundry-upgrades/Upgrades.sol";
+import {Options} from "openzeppelin-foundry-upgrades/Options.sol";
+contract permitListScript is Script {
+    // NftMarket mkt;
+    NFT nft;
+    Token token;
+    event BalancePrinted(uint256 balance);
+    address alice = 0x23AE1FC8E4e40274BeB45bb63f773C902EDD7423;
+
+
+    function setUp() public {
+    
+    }
     function run() public {
         vm.startBroadcast();
-        address nftAddress = address(new NFT());
-        address tokenAddress = address(
-            new Token()
-        );
 
-        address uupsProxy = Upgrades.deployUUPSProxy(
-            "NftMarketV1.sol",
-            abi.encodeCall(
-                NftMarketV1.initialize,
-                (tokenAddress, nftAddress, 0x23AE1FC8E4e40274BeB45bb63f773C902EDD7423)
-            )
-        );
-        // upgrade to V2
-        Upgrades.upgradeProxy(uupsProxy, "NftMarketV2.sol", "");
-        vm.stopBroadcast();
+        Options memory opts;
+        opts.unsafeSkipAllChecks =true;
 
-        console.log("UUPS Proxy Address:", address(uupsProxy));
+        
+        nft = new NFT();
+        token = new Token("pepoc3","pepoc3");
+        
+        console.log("token:", address(token));
+        // console.log("mktV1:", address(mktV1));
+        // console.log("mktV2:", address(mktV2));
+
+        console.log("nft:", address(nft));
+        // vm.prank(address(this));
+        // vm.prank(alice);
+        token.transfer(alice, 1);
+        // vm.prank(alice);
+
+        //Deploy a UUPS proxy
+
+        bytes memory data =abi.encodeWithSelector(NFTMarketV1.initialize.selector,address(nft), address(token));
+
+
+        new NFTMarketV1();
+
+
+        address proxy = Upgrades.deployUUPSProxy(
+        "NFTMarketV1.sol:NFTMarketV1",data);
+
+        console.log("proxy:",proxy);
+        //初始化NFTMarketV1
+        // NFTMarketV1 mktV1 = NFTMarketV1(proxy);
+
+        // 升级合约
+        Upgrades.upgradeProxy (
+        proxy,
+        "NFTMarketV2.sol",
+        ""
+        );
+        // nft.mint(alice);
+
+
+        // emit BalancePrinted(token.balanceOf(alice));
+        require(token.balanceOf(alice)==10000000000000000000000000000, "bad amount");
     }
 }
