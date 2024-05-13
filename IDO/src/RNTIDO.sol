@@ -40,7 +40,7 @@ contract RNTIDO {
         uint256 amount = balances [msg.sender];
         require(amount >0,"nothing to claim");
 
-        uint256 share = totalSold / TOTAL_SUPPLY;
+        uint256 share = TOTAL_SUPPLY / totalSold ;
         uint256 claimAmount =amount * share;
         balances[msg.sender] = 0;
         require(RNT.transfer(msg.sender, claimAmount), "RNT transfer failed");
