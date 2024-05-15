@@ -1,4 +1,4 @@
-## IDO test 截图
+## StakingPool test 截图
 
 
 #  testStake
