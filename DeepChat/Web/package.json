@@ -1,0 +1,30 @@
+{
+  "name": "DeepChat",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@heroicons/react": "^2.1.1",
+    "@material-tailwind/react": "^2.1.8",
+    "@pushprotocol/restapi": "^1.5.5",
+    "@reduxjs/toolkit": "^2.0.1",
+    "boring-avatars": "^1.10.1",
+    "ethers": "5.7",
+    "next": "14.0.4",
+    "react": "^18",
+    "react-dom": "^18",
+    "react-redux": "^9.0.4",
+    "viem": "^1.19.13",
+    "wagmi": "^1.4.10"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.0.1",
+    "postcss": "^8",
+    "tailwindcss": "^3.3.0"
+  }
+}
